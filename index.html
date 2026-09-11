@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+<title>ZYNEX PHARMA</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+  :root{
+    --maroon-0:#2a0a10;
+    --maroon-1:#3d0f16;
+    --maroon-2:#521320;
+    --gold:#d9b46a;
+    --gold-soft:#e8cf9a;
+    --gold-dim: rgba(217,180,106,0.35);
+    --text-soft: rgba(232,207,154,0.72);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{
+    margin:0;padding:0;height:100%;
+    background:
+      radial-gradient(120% 60% at 50% -10%, #5a1a26 0%, transparent 60%),
+      linear-gradient(180deg, var(--maroon-0) 0%, var(--maroon-1) 45%, #1c0509 100%);
+    color:var(--gold-soft);
+    font-family: 'Georgia', 'Times New Roman', serif;
+    overflow:hidden;
+  }
+  #app{
+    min-height:100vh;
+    min-height:100dvh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding: max(18px, env(safe-area-inset-top)) 18px calc(24px + env(safe-area-inset-bottom));
+    position:relative;
+  }
+
+  /* faint background ornament */
+  #app::before{
+    content:"";
+    position:absolute; inset:0;
+    background-image: radial-gradient(circle at 20% 15%, rgba(217,180,106,0.06) 0, transparent 40%),
+                       radial-gradient(circle at 85% 80%, rgba(217,180,106,0.05) 0, transparent 45%);
+    pointer-events:none;
+  }
+
+  /* ---------- top bar: language switch ---------- */
+  .langbar{
+    width:100%;
+    display:flex;
+    justify-content:center;
+    gap:8px;
+    margin-bottom:14px;
+    z-index:2;
+  }
+  .lang-btn{
+    appearance:none;border:1px solid var(--gold-dim);
+    background:rgba(217,180,106,0.06);
+    color:var(--text-soft);
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size:11px;
+    letter-spacing:0.14em;
+    padding:6px 12px;
+    border-radius:999px;
+    cursor:pointer;
+    transition: all .25s ease;
+  }
+  .lang-btn.active{
+    background: linear-gradient(180deg, var(--gold-soft), var(--gold));
+    color:#2a0a10;
+    border-color: var(--gold);
+    font-weight:700;
+    box-shadow: 0 2px 10px rgba(217,180,106,0.35);
+  }
+
+  /* ---------- logo ---------- */
+  .logo-wrap{
+    display:flex;flex-direction:column;align-items:center;
+    margin: 6px 0 22px;
+    z-index:2;
+  }
+  .logo-ring{
+    width:96px;height:96px;border-radius:50%;
+    background: radial-gradient(circle at 35% 30%, #6a1c28, #3a0e14 70%);
+    border:1.5px solid var(--gold);
+    box-shadow: 0 0 0 5px rgba(217,180,106,0.08), 0 10px 28px rgba(0,0,0,0.45);
+    display:flex;align-items:center;justify-content:center;
+    position:relative;
+  }
+  .logo-ring::after{
+    content:"";
+    position:absolute; inset:6px;
+    border-radius:50%;
+    border:1px solid rgba(217,180,106,0.35);
+  }
+  .logo-z{
+    font-family: 'Times New Roman', serif;
+    font-style:italic;
+    font-weight:700;
+    font-size:40px;
+    color:var(--gold-soft);
+    text-shadow: 0 1px 6px rgba(0,0,0,0.5);
+    line-height:1;
+    transform: translateY(-2px);
+  }
+  .logo-word{
+    margin-top:10px;
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    font-size:11px;
+    letter-spacing:0.32em;
+    color: var(--text-soft);
+  }
+  .logo-word b{ color:var(--gold-soft); font-weight:600; letter-spacing:0.32em; }
+
+  /* ---------- catalog title ---------- */
+  .catalog-title{
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    font-size:12px;
+    letter-spacing:0.2em;
+    color: var(--text-soft);
+    text-transform:uppercase;
+    margin-bottom:16px;
+    z-index:2;
+    opacity:0.85;
+  }
+
+  /* ---------- 3D stage ---------- */
+  .stage{
+    width:100%;
+    max-width:340px;
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    z-index:2;
+    min-height:280px;
+  }
+  .perspective{
+    width:210px;
+    height:260px;
+    perspective:900px;
+    margin-bottom:26px;
+  }
+  .box3d{
+    width:100%;height:100%;
+    position:relative;
+    transform-style:preserve-3d;
+    animation: idleSpin 9s ease-in-out infinite;
+  }
+  @keyframes idleSpin{
+    0%,100%{ transform: rotateY(-14deg) rotateX(4deg); }
+    50%{ transform: rotateY(14deg) rotateX(4deg); }
+  }
+  .face{
+    position:absolute;
+    display:flex;align-items:center;justify-content:center;
+    text-align:center;
+    backface-visibility:hidden;
+    border:1px solid rgba(217,180,106,0.45);
+  }
+  .face-front{
+    width:210px;height:260px;
+    left:0;top:0;
+    transform: translateZ(38px);
+    border-radius:10px;
+    background: linear-gradient(160deg, var(--box-color-l), var(--box-color-d));
+    box-shadow: inset 0 0 40px rgba(0,0,0,0.25);
+    flex-direction:column;
+    padding:22px 16px;
+  }
+  .face-side{
+    width:76px;height:260px;
+    left:0;top:0;
+    transform: rotateY(90deg) translateZ(105px);
+    background: linear-gradient(180deg, var(--box-color-d), #1a0507);
+    border-radius:10px;
+  }
+  .face-top{
+    width:210px;height:76px;
+    left:0;top:0;
+    transform: rotateX(90deg) translateZ(38px) translateY(-38px);
+    background: linear-gradient(90deg, var(--box-color-l), var(--box-color-lighter));
+    border-radius:10px;
+  }
+  .box-mark{
+    width:46px;height:46px;border-radius:50%;
+    border:1px solid rgba(232,207,154,0.7);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Times New Roman', serif;font-style:italic;
+    font-size:20px; color: var(--gold-soft);
+    margin-bottom:14px;
+    background: rgba(0,0,0,0.15);
+  }
+  .box-name{
+    font-family:'Georgia', serif;
+    font-size:19px;
+    color:#fbeed4;
+    font-weight:700;
+    letter-spacing:0.01em;
+    margin-bottom:8px;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.35);
+  }
+  .box-tag{
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    font-size:11px;
+    line-height:1.5;
+    color: rgba(255,255,255,0.78);
+    letter-spacing:0.02em;
+  }
+  .box-divider{
+    width:28px;height:1px;
+    background: rgba(232,207,154,0.55);
+    margin:10px 0;
+  }
+
+  /* fade transition between products */
+  .box3d.switching .face-front,
+  .box3d.switching .box-name,
+  .box3d.switching .box-tag{ opacity:0; }
+  .face-front, .box-mark, .box-name, .box-tag{
+    transition: opacity .35s ease;
+  }
+
+  /* ---------- dots ---------- */
+  .dots{
+    display:flex;gap:7px;
+    margin-bottom:4px;
+  }
+  .dot{
+    width:6px;height:6px;border-radius:50%;
+    background: rgba(217,180,106,0.28);
+    transition: all .3s ease;
+  }
+  .dot.active{
+    background: var(--gold-soft);
+    width:16px;border-radius:4px;
+  }
+
+  .footer{
+    margin-top:14px;
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    font-size:9.5px;
+    letter-spacing:0.18em;
+    color: rgba(232,207,154,0.4);
+    text-transform:uppercase;
+    z-index:2;
+  }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <div class="langbar" id="langbar">
+    <button class="lang-btn" data-lang="uz">UZ</button>
+    <button class="lang-btn" data-lang="en">ENG</button>
+    <button class="lang-btn" data-lang="ru">RUS</button>
+  </div>
+
+  <div class="logo-wrap">
+    <div class="logo-ring"><span class="logo-z">Z</span></div>
+    <div class="logo-word"><b>ZYNEX</b>&nbsp; PHARMA</div>
+  </div>
+
+  <div class="catalog-title" id="catalogTitle">Mahsulotlar katalogi</div>
+
+  <div class="stage">
+    <div class="perspective">
+      <div class="box3d" id="box3d">
+        <div class="face face-front" id="faceFront">
+          <div class="box-mark" id="boxMark">Z</div>
+          <div class="box-name" id="boxName"></div>
+          <div class="box-divider"></div>
+          <div class="box-tag" id="boxTag"></div>
+        </div>
+        <div class="face face-side"></div>
+        <div class="face face-top"></div>
+      </div>
+    </div>
+    <div class="dots" id="dots"></div>
+  </div>
+
+  <div class="footer">ZYNEX PHARMA &nbsp;•&nbsp; O'zbekiston</div>
+</div>
+
+<script>
+(function(){
+  var tg = window.Telegram && window.Telegram.WebApp;
+  if (tg) {
+    try {
+      tg.ready();
+      tg.expand();
+      tg.setHeaderColor('#2a0a10');
+      tg.setBackgroundColor('#2a0a10');
+    } catch(e){}
+  }
+
+  var products = [
+    {
+      key:'glat', mark:'G',
+      color:['#7a2233','#4a121e','#8f2c3e'],
+      name:{ uz:'«Глат»', ru:'«Глат»', en:'"Glat"' },
+      tag:{
+        uz:'Ginekologik intravaginal krem',
+        ru:'Гинекологический интравагинальный крем',
+        en:'Gynecological intravaginal cream'
+      }
+    },
+    {
+      key:'betrin', mark:'B',
+      color:['#8a3420','#521e12','#a03f28'],
+      name:{ uz:'Betrin', ru:'Бетрин', en:'Betrin' },
+      tag:{
+        uz:'Bolalar uchun sirop',
+        ru:'Сироп для детей',
+        en:'Syrup for children'
+      }
+    },
+    {
+      key:'rikalm', mark:'R',
+      color:['#6e2246','#411430','#7e2b52'],
+      name:{ uz:'Ri-Calm', ru:'Ри-Калм', en:'Ri-Calm' },
+      tag:{
+        uz:'Tinchlantiruvchi sirop',
+        ru:'Успокаивающий сироп',
+        en:'Calming syrup'
+      }
+    },
+    {
+      key:'demarol', mark:'D',
+      color:['#5c1f38','#371226','#6b2542'],
+      name:{ uz:'Demarol', ru:'Демарол', en:'Demarol' },
+      tag:{
+        uz:'Jigar va mikroflora uchun sirop',
+        ru:'Сироп для печени и микрофлоры',
+        en:'Syrup for liver and microflora'
+      }
+    },
+    {
+      key:'eklofor', mark:'E',
+      color:['#7c2b3a','#4a1722','#8e3242'],
+      name:{ uz:'Eklofor', ru:'Эклофор', en:'Eclofor' },
+      tag:{
+        uz:"Immunitet va temir darajasi uchun",
+        ru:'Для иммунитета и уровня железа',
+        en:'For immunity and iron level'
+      }
+    }
+  ];
+
+  var titles = {
+    uz:'Mahsulotlar katalogi',
+    ru:'Каталог продукции',
+    en:'Product catalog'
+  };
+
+  var lang = 'uz';
+  var idx = 0;
+  var timer = null;
+
+  var $box = document.getElementById('box3d');
+  var $front = document.getElementById('faceFront');
+  var $mark = document.getElementById('boxMark');
+  var $name = document.getElementById('boxName');
+  var $tag = document.getElementById('boxTag');
+  var $dots = document.getElementById('dots');
+  var $title = document.getElementById('catalogTitle');
+  var $langbar = document.getElementById('langbar');
+
+  function buildDots(){
+    $dots.innerHTML = '';
+    products.forEach(function(_, i){
+      var d = document.createElement('div');
+      d.className = 'dot' + (i === idx ? ' active' : '');
+      $dots.appendChild(d);
+    });
+  }
+
+  function render(){
+    var p = products[idx];
+    document.documentElement.style.setProperty('--box-color-l', p.color[0]);
+    document.documentElement.style.setProperty('--box-color-d', p.color[1]);
+    document.documentElement.style.setProperty('--box-color-lighter', p.color[2]);
+    $mark.textContent = p.mark;
+    $name.textContent = p.name[lang];
+    $tag.textContent = p.tag[lang];
+    $title.textContent = titles[lang];
+    buildDots();
+  }
+
+  function next(){
+    $box.classList.add('switching');
+    setTimeout(function(){
+      idx = (idx + 1) % products.length;
+      render();
+      $box.classList.remove('switching');
+    }, 320);
+  }
+
+  function setLang(l){
+    lang = l;
+    Array.prototype.forEach.call($langbar.children, function(btn){
+      btn.classList.toggle('active', btn.getAttribute('data-lang') === l);
+    });
+    render();
+  }
+
+  $langbar.addEventListener('click', function(e){
+    var btn = e.target.closest('.lang-btn');
+    if (!btn) return;
+    setLang(btn.getAttribute('data-lang'));
+    if (tg && tg.HapticFeedback) { try { tg.HapticFeedback.selectionChanged(); } catch(e){} }
+  });
+
+  setLang('uz');
+  timer = setInterval(next, 3500);
+})();
+</script>
+</body>
+</html>
+
