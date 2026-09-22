@@ -263,6 +263,94 @@
     text-transform:uppercase;
     margin: 10px 0 4px;
   }
+
+  /* ---------- contact / aloqa view ---------- */
+  .view{ display:none; }
+  .view.show{ display:block; }
+  .contact-view{
+    padding: 4px 16px 10px;
+  }
+  .contact-card{
+    background:#fff;
+    border:1px solid var(--card-line);
+    border-radius:18px;
+    box-shadow: var(--shadow);
+    padding:18px;
+    margin: 14px 0;
+  }
+  .contact-card-title{
+    font-size:13.5px;
+    font-weight:700;
+    color: var(--maroon);
+    margin-bottom:10px;
+  }
+  .contact-phone-link{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    text-decoration:none;
+    color: var(--ink);
+    font-size:15px;
+    font-weight:700;
+    padding:10px 12px;
+    background: var(--bg);
+    border-radius:12px;
+  }
+  .contact-phone-link svg{ width:18px;height:18px; color: var(--maroon); flex-shrink:0; }
+  .contact-note{
+    font-size:11px;
+    color: var(--ink-soft);
+    line-height:1.4;
+    margin-top:10px;
+  }
+  .contact-form label{
+    display:block;
+    font-size:11.5px;
+    font-weight:600;
+    color: var(--ink-soft);
+    margin: 0 0 6px;
+  }
+  .contact-form input,
+  .contact-form textarea{
+    width:100%;
+    border:1px solid var(--card-line);
+    border-radius:12px;
+    padding:11px 12px;
+    font-size:13px;
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    margin-bottom:12px;
+    background: var(--bg);
+    color: var(--ink);
+    outline:none;
+  }
+  .contact-form input:focus,
+  .contact-form textarea:focus{
+    border-color: var(--maroon-l);
+  }
+  .contact-form textarea{
+    min-height:96px;
+    resize:vertical;
+  }
+  .contact-submit{
+    width:100%;
+    border:none;
+    border-radius:12px;
+    padding:13px;
+    background: linear-gradient(135deg, var(--maroon-l), var(--maroon));
+    color:#fff;
+    font-weight:700;
+    font-size:13.5px;
+    letter-spacing:0.01em;
+  }
+  .contact-submit:disabled{ opacity:0.6; }
+  .contact-status{
+    font-size:11.5px;
+    text-align:center;
+    margin-top:10px;
+    min-height:14px;
+    color: var(--maroon);
+    font-weight:600;
+  }
 </style>
 </head>
 <body>
@@ -300,6 +388,7 @@
     <button class="lang-btn" data-lang="ru">RUS</button>
   </div>
 
+  <div class="view show" id="homeView">
   <div class="banner">
     <div class="banner-text">
       <div class="banner-title" id="bannerTitle">Sifat va ishonch — ZYNEX PHARM</div>
@@ -316,6 +405,29 @@
   <div class="empty-state" id="emptyState">Hech narsa topilmadi</div>
 
   <div class="footer-note">ZYNEX PHARM &nbsp;&bull;&nbsp; O'ZBEKISTON</div>
+  </div>
+
+  <div class="view contact-view" id="contactView">
+    <div class="contact-card">
+      <div class="contact-card-title" id="contactPhoneTitle">Biz bilan bog'laning</div>
+      <a class="contact-phone-link" href="tel:+998999031188">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        <span id="contactPhoneText">+998 99 903 11 88</span>
+      </a>
+    </div>
+
+    <div class="contact-card">
+      <div class="contact-card-title" id="feedbackTitle">✍️ Taklif va shikoyat</div>
+      <form class="contact-form" id="feedbackForm">
+        <label id="feedbackPhoneLabel" for="feedbackPhone">Telefon raqamingiz</label>
+        <input type="tel" id="feedbackPhone" placeholder="+998 __ ___ __ __" />
+        <label id="feedbackMessageLabel" for="feedbackMessage">Xabaringiz</label>
+        <textarea id="feedbackMessage" placeholder="Taklif yoki shikoyatingizni shu yerga yozing..."></textarea>
+        <button type="submit" class="contact-submit" id="feedbackSubmit">Yuborish</button>
+        <div class="contact-status" id="feedbackStatus"></div>
+      </form>
+    </div>
+  </div>
 
   <div class="navbar">
     <div class="navitem active" data-nav="home">
@@ -421,7 +533,18 @@
       search:"Mahsulot qidirish...",
       empty:"Hech narsa topilmadi",
       navHome:"Bosh sahifa", navCatalog:"Katalog", navContact:"Aloqa", navProfile:"Profil",
-      label:"Dori vositasi"
+      label:"Dori vositasi",
+      contactPhoneTitle:"Biz bilan bog'laning",
+      feedbackTitle:"✍️ Taklif va shikoyat",
+      feedbackPhoneLabel:"Telefon raqamingiz",
+      feedbackMessageLabel:"Xabaringiz",
+      feedbackPhonePh:"+998 __ ___ __ __",
+      feedbackMessagePh:"Taklif yoki shikoyatingizni shu yerga yozing...",
+      feedbackSubmit:"Yuborish",
+      feedbackSending:"Yuborilmoqda...",
+      feedbackSuccess:"✅ Rahmat! Xabaringiz qabul qilindi.",
+      feedbackEmpty:"Iltimos, xabar matnini kiriting.",
+      feedbackNoTelegram:"Bu forma faqat Telegram ilovasi ichida ishlaydi."
     },
     ru:{
       title:'Каталог продукции',
@@ -431,7 +554,18 @@
       search:"Поиск товара...",
       empty:"Ничего не найдено",
       navHome:"Главная", navCatalog:"Каталог", navContact:"Контакт", navProfile:"Профиль",
-      label:"Препарат"
+      label:"Препарат",
+      contactPhoneTitle:"Свяжитесь с нами",
+      feedbackTitle:"✍️ Предложения и жалобы",
+      feedbackPhoneLabel:"Ваш номер телефона",
+      feedbackMessageLabel:"Ваше сообщение",
+      feedbackPhonePh:"+998 __ ___ __ __",
+      feedbackMessagePh:"Напишите здесь своё предложение или жалобу...",
+      feedbackSubmit:"Отправить",
+      feedbackSending:"Отправка...",
+      feedbackSuccess:"✅ Спасибо! Ваше сообщение получено.",
+      feedbackEmpty:"Пожалуйста, введите текст сообщения.",
+      feedbackNoTelegram:"Эта форма работает только внутри приложения Telegram."
     },
     en:{
       title:'Product catalog',
@@ -441,7 +575,18 @@
       search:"Search product...",
       empty:"Nothing found",
       navHome:"Home", navCatalog:"Catalog", navContact:"Contact", navProfile:"Profile",
-      label:"Medicine"
+      label:"Medicine",
+      contactPhoneTitle:"Get in touch",
+      feedbackTitle:"✍️ Suggestions & complaints",
+      feedbackPhoneLabel:"Your phone number",
+      feedbackMessageLabel:"Your message",
+      feedbackPhonePh:"+998 __ ___ __ __",
+      feedbackMessagePh:"Write your suggestion or complaint here...",
+      feedbackSubmit:"Send",
+      feedbackSending:"Sending...",
+      feedbackSuccess:"✅ Thank you! Your message has been received.",
+      feedbackEmpty:"Please enter a message.",
+      feedbackNoTelegram:"This form only works inside the Telegram app."
     }
   };
 
@@ -460,6 +605,17 @@
   var $navCatalog = document.getElementById('navCatalog');
   var $navContact = document.getElementById('navContact');
   var $navProfile = document.getElementById('navProfile');
+  var $homeView = document.getElementById('homeView');
+  var $contactView = document.getElementById('contactView');
+  var $contactPhoneTitle = document.getElementById('contactPhoneTitle');
+  var $feedbackTitle = document.getElementById('feedbackTitle');
+  var $feedbackPhoneLabel = document.getElementById('feedbackPhoneLabel');
+  var $feedbackMessageLabel = document.getElementById('feedbackMessageLabel');
+  var $feedbackPhone = document.getElementById('feedbackPhone');
+  var $feedbackMessage = document.getElementById('feedbackMessage');
+  var $feedbackSubmit = document.getElementById('feedbackSubmit');
+  var $feedbackForm = document.getElementById('feedbackForm');
+  var $feedbackStatus = document.getElementById('feedbackStatus');
 
   function buildGrid(){
     $grid.innerHTML = '';
@@ -522,6 +678,13 @@
     $navCatalog.textContent = i18n[lang].navCatalog;
     $navContact.textContent = i18n[lang].navContact;
     $navProfile.textContent = i18n[lang].navProfile;
+    $contactPhoneTitle.textContent = i18n[lang].contactPhoneTitle;
+    $feedbackTitle.textContent = i18n[lang].feedbackTitle;
+    $feedbackPhoneLabel.textContent = i18n[lang].feedbackPhoneLabel;
+    $feedbackMessageLabel.textContent = i18n[lang].feedbackMessageLabel;
+    $feedbackPhone.placeholder = i18n[lang].feedbackPhonePh;
+    $feedbackMessage.placeholder = i18n[lang].feedbackMessagePh;
+    $feedbackSubmit.textContent = i18n[lang].feedbackSubmit;
     applySearch();
   }
 
@@ -547,11 +710,47 @@
     item.addEventListener('click', function(){
       $navItems.forEach(function(i){ i.classList.remove('active'); });
       item.classList.add('active');
-      if (item.dataset.nav === 'catalog') {
-        document.querySelector('.section').scrollIntoView({behavior:'smooth', block:'start'});
+      var nav = item.dataset.nav;
+      if (nav === 'contact') {
+        $homeView.classList.remove('show');
+        $contactView.classList.add('show');
+        window.scrollTo({top:0, behavior:'smooth'});
+      } else {
+        $contactView.classList.remove('show');
+        $homeView.classList.add('show');
+        if (nav === 'catalog') {
+          document.querySelector('.section').scrollIntoView({behavior:'smooth', block:'start'});
+        }
       }
       if (tg && tg.HapticFeedback) { try { tg.HapticFeedback.selectionChanged(); } catch(e){} }
     });
+  });
+
+  $feedbackForm.addEventListener('submit', function(e){
+    e.preventDefault();
+    var message = $feedbackMessage.value.trim();
+    var phone = $feedbackPhone.value.trim();
+    if (!message) {
+      $feedbackStatus.textContent = i18n[lang].feedbackEmpty;
+      return;
+    }
+    if (!tg || !tg.sendData) {
+      $feedbackStatus.textContent = i18n[lang].feedbackNoTelegram;
+      return;
+    }
+    $feedbackSubmit.disabled = true;
+    $feedbackSubmit.textContent = i18n[lang].feedbackSending;
+    $feedbackStatus.textContent = '';
+    try {
+      tg.sendData(JSON.stringify({ type: 'feedback', phone: phone, message: message }));
+      if (tg.HapticFeedback) { try { tg.HapticFeedback.notificationOccurred('success'); } catch(e){} }
+      $feedbackStatus.textContent = i18n[lang].feedbackSuccess;
+      $feedbackForm.reset();
+    } catch (err) {
+      $feedbackStatus.textContent = i18n[lang].feedbackNoTelegram;
+    }
+    $feedbackSubmit.disabled = false;
+    $feedbackSubmit.textContent = i18n[lang].feedbackSubmit;
   });
 
   setLang('uz');
